@@ -1,8 +1,25 @@
 import requests
 import json
+import keyring
 
 base = 'https://api.github.com/'
-username = input(str("insert username: "))
+SERVICE = 'GitCLI'
+KEY = 'username'
+
+def login():
+    username = keyring.get_password(SERVICE, KEY)
+
+    if username:
+
+        return username
+
+    username = input("Enter username: ").strip()
+    keyring.set_password(SERVICE, KEY, username)
+
+    return username
+
+
+
 
 def get_events(username):
 
@@ -14,6 +31,14 @@ def get_events(username):
     for event in events:
         print(event["type"], "->", event["repo"]["name"], "AT THE TIME: ", event["created_at"])
 
-get_events(username)
-    
+
+
+def main():
+    username = login()
+    get_events(username)
+
+
+
+if __name__ == "__main__":
+    main()
 
